@@ -85,7 +85,7 @@ class WebcamApp:
             processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
             
             # Draw a rectangle with the selected color
-            cv2.rectangle(processed_frame, (50, 50), (200, 200), tuple(int(self.current_color[i:i+2], 16) for i in (1, 3, 5)), -1)
+            # cv2.rectangle(processed_frame, (50, 50), (200, 200), tuple(int(self.current_color[i:i+2], 16) for i in (1, 3, 5)), -1)
             
             # Convert the frame to a PIL image
             image = Image.fromarray(processed_frame)
