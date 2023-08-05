@@ -73,20 +73,9 @@ def process_results(output, boxes, scores, labels, H, W, color):
     return boxnum, box_mid
 
 
-def nailTracking(frame, color):
+def nailTracking(frame, model, color):
     color = hex_to_bgr(color)
-    model = tf.Graph()
-
-    with model.as_default():
-        print("> ====== loading NAIL frozen graph into memory")
-        graphDef = tf.GraphDef()
-
-        with tf.gfile.GFile(args["model"], "rb") as f:
-            serializedGraph = f.read()
-            graphDef.ParseFromString(serializedGraph)
-            tf.import_graph_def(graphDef, name="")
-        print(">  ====== NAIL Inference graph loaded.")
-
+    
     with model.as_default():
         with tf.Session(graph=model) as sess:
             global imageTensor

@@ -4,8 +4,9 @@ from PIL import Image, ImageTk
 from tkinter import colorchooser
 
 class WebcamApp:
-    def __init__(self, window, window_title, image_processor):
+    def __init__(self, window, window_title, image_processor, model):
         self.image_processor = image_processor
+        self.model = model
         self.window = window
         self.window.title(window_title)
         
@@ -78,7 +79,7 @@ class WebcamApp:
         ret, frame = self.vid.read()
         if ret:
             # Call the process_image function on the webcam frame
-            processed_frame = self.image_processor(frame, self.current_color)
+            processed_frame = self.image_processor(frame, self.model, self.current_color)
             
             # Convert the frame from OpenCV's BGR format to RGB format
             processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
@@ -91,7 +92,7 @@ class WebcamApp:
             # Convert the PIL image to a Tkinter PhotoImage
             self.photo = ImageTk.PhotoImage(image=image)
             # Show the new frame on the canvas
-            self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
+            self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)            
         self.window.after(10, self.update)
 
 if __name__ == "__main__":
