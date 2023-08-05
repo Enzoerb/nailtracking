@@ -61,8 +61,9 @@ def process_results(boxes, scores, labels, H, W, idx):
         # label = "{}: {:.2f}".format(label_name, score)
 
         # Calculate the center and axes lengths of the ellipse
+
         center = ((startX + endX) // 2, (startY + endY) // 2)
-        axes = ((endX - startX) // 2, (endY - startY) // 2)
+        axes = ((endX - startX) // 2, (endY - startY))
 
         # Draw the filled ellipse with the specified color
         cv2.ellipse(output, center, axes, 0, 0, 360, COLORS[idx], -1)
@@ -113,9 +114,9 @@ if __name__ == '__main__':
                 
                 cv2.imshow("Output", output)
 
-                if cv2.waitKey(1) == ord("a"): color = 0
-                if cv2.waitKey(1) == ord("b"): color = 1
-                if cv2.waitKey(1) == ord("c"): color = 2
+                # if cv2.waitKey(1) == ord("a"): color = 0
+                # if cv2.waitKey(1) == ord("b"): color = 1
+                # if cv2.waitKey(1) == ord("c"): color = 2
 
                 if cv2.waitKey(1) == ord("q"):
                     cv2.destroyAllWindows()
