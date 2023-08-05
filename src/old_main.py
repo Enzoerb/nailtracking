@@ -16,13 +16,13 @@ def hex_to_bgr(hex):
     blue = int(hex[4:6], 16)
     return tuple((blue, green, red))
 
-# def hex_list_to_bgr_list(hex_list):
-#     return [hex_to_bgr(hex_color) for hex_color in hex_list]
+def hex_list_to_bgr_list(hex_list):
+    return [hex_to_bgr(hex_color) for hex_color in hex_list]
 
 # Example usage:
-# hex_colors = ["0000ff", "#c75685", "#8d435c", "#e393b9"]
-# COLORS = hex_list_to_bgr_list(hex_colors)
-# color = 0
+hex_colors = ["#c75685", "#8d435c", "#e393b9"]
+COLORS = hex_list_to_bgr_list(hex_colors)
+color = 0
 
 def process_image(frame):
     YCrCb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2YCrCb)
@@ -42,7 +42,7 @@ def run_inference(sess, image, boxesTensor, scoresTensor, classesTensor, numDete
 
     return np.squeeze(boxes), np.squeeze(scores), np.squeeze(labels)
 
-def process_results(output, boxes, scores, labels, H, W, color):
+def process_results(boxes, scores, labels, H, W, idx):
     boxnum = 0
     box_mid = (0, 0)
     valid_boxes = [(box, score, label) for (box, score, label) in zip(boxes, scores, labels) if score >= args["min_confidence"]]
@@ -61,11 +61,12 @@ def process_results(output, boxes, scores, labels, H, W, color):
         # label = "{}: {:.2f}".format(label_name, score)
 
         # Calculate the center and axes lengths of the ellipse
+
         center = ((startX + endX) // 2, (startY + endY) // 2)
-        axes = ((endX - startX) // 2, (endY - startY) // 1)
+        axes = ((endX - startX) // 2, (endY - startY))
 
         # Draw the filled ellipse with the specified color
-        cv2.ellipse(output, center, axes, 0, 0, 360, color, -1)
+        cv2.ellipse(output, center, axes, 0, 0, 360, COLORS[idx], -1)
 
         # Draw the text in white
         # y = startY - 10 if startY - 10 > 10 else startY + 10
@@ -73,8 +74,7 @@ def process_results(output, boxes, scores, labels, H, W, color):
     return boxnum, box_mid
 
 
-def nailTracking(frame, color):
-    color = hex_to_bgr(color)
+if __name__ == '__main__':
     model = tf.Graph()
 
     with model.as_default():
@@ -89,17 +89,16 @@ def nailTracking(frame, color):
 
     with model.as_default():
         with tf.Session(graph=model) as sess:
-            global imageTensor
             imageTensor = model.get_tensor_by_name("image_tensor:0")
             boxesTensor = model.get_tensor_by_name("detection_boxes:0")
             scoresTensor = model.get_tensor_by_name("detection_scores:0")
             classesTensor = model.get_tensor_by_name("detection_classes:0")
             numDetections = model.get_tensor_by_name("num_detections:0")
 
-            # vs = cv2.VideoCapture(0)
+            vs = cv2.VideoCapture(0)
 
             while True:
-                # _, frame = vs.read()
+                _, frame = vs.read()
                 if frame is None:
                     continue
                 frame = cv2.flip(frame, 1)
@@ -111,15 +110,15 @@ def nailTracking(frame, color):
                 image = np.expand_dims(image, axis=0)
 
                 boxes, scores, labels = run_inference(sess, image, boxesTensor, scoresTensor, classesTensor, numDetections)
-                boxnum, box_mid = process_results(output, boxes, scores, labels, H, W, color)
+                boxnum, box_mid = process_results(boxes, scores, labels, H, W, color)
                 
-                return output
-                
-                # if cv2.waitKey(1) == ord("q"):
-                #     cv2.destroyAllWindows()
-                #     break
-                
-# if __name__ == '__main__':
-#     color = hex_to_bgr("0000ff")
+                cv2.imshow("Output", output)
 
-#     main(color)
+                # if cv2.waitKey(1) == ord("a"): color = 0
+                # if cv2.waitKey(1) == ord("b"): color = 1
+                # if cv2.waitKey(1) == ord("c"): color = 2
+
+                if cv2.waitKey(1) == ord("q"):
+                    cv2.destroyAllWindows()
+                    break
+                
