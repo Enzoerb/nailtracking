@@ -78,7 +78,7 @@ class WebcamApp:
         ret, frame = self.vid.read()
         if ret:
             # Call the process_image function on the webcam frame
-            processed_frame = self.image_processor(frame)
+            processed_frame = self.image_processor(frame, self.current_color)
             
             # Convert the frame from OpenCV's BGR format to RGB format
             processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
