@@ -33,7 +33,7 @@ class WebcamApp:
         colors = {
             "Azul": "#596E7F",
             "Vermelho": "#660B1C",
-            "Roxo": "#1B0617",
+            "Roxo": "#5400ab",
             "Verde": "#799F63",
             "Lilas": "#baa3bd"
         }
