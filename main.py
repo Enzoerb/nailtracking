@@ -22,4 +22,4 @@ if __name__ == "__main__":
         print(">  ====== NAIL Inference graph loaded.")
 
         root = tk.Tk()
-        app = WebcamApp(root, "Power Nail by Pixel Power", nailTracking, model)
+        app = WebcamApp(root, "Power Nail by Pixel Power - v1.0.0", nailTracking, model)
